@@ -36,15 +36,16 @@ jobs:
       - name: Validate vendor set
         run: |
           test -s fonts-czech-local.json
+          test -s fonts-czech-local.js
           test -d fonts/czech
           test "$(find fonts/czech -type f -name '*.woff2' | wc -l)" -gt 0
-          node -e "const x=require('./fonts-czech-local.json'); if (x.downloadedCount < 500) process.exit(1); console.log('Vendored fonts:', x.downloadedCount, 'failed:', x.failedCount)"
+          node -e "const fs=require('fs'); const x=require('./fonts-czech-local.json'); const s=fs.readFileSync('fonts-czech-local.js','utf8'); if (x.downloadedCount < 500 || !s.includes('__TX_PICVL_FONT_CATALOG__')) process.exit(1); console.log('Vendored fonts:', x.downloadedCount, 'failed:', x.failedCount)"
 
       - name: Commit vendored fonts
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add fonts-czech-local.json fonts/czech
+          git add fonts-czech-local.json fonts-czech-local.js fonts/czech
           if git diff --cached --quiet; then
             echo "No font changes."
             exit 0
