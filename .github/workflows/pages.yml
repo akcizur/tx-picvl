@@ -29,10 +29,12 @@ jobs:
           cp aboutme.md dist/aboutme.md
           cp fonts-czech.json dist/fonts-czech.json
           if [ -f fonts-czech-local.json ]; then cp fonts-czech-local.json dist/fonts-czech-local.json; fi
+          if [ -f fonts-czech-local.js ]; then cp fonts-czech-local.js dist/fonts-czech-local.js; fi
           if [ -d fonts/czech ]; then cp -R fonts dist/fonts; fi
           test -s dist/index.html
           test -s dist/aboutme.md
           test -s dist/fonts-czech.json
+          test -s dist/fonts-czech-local.js
           grep -q '</html>' dist/index.html
 
       - name: Upload Pages artifact
