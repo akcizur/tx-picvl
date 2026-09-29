@@ -1,15 +1,18 @@
 :root {
-  --pill-bg-1: rgba(20, 20, 20, 0.98);
-  --pill-bg-2: rgba(30, 30, 30, 0.96);
-  --pill-ring: rgba(255, 255, 255, 0.16);
-  --pill-shadow: rgba(0, 0, 0, 0.34);
-  --pill-text: #f7f7f7;
+  --ui-black: #000;
+  --ui-950: #080808;
+  --ui-900: #101010;
+  --ui-800: #1a1a1a;
+  --ui-700: #2a2a2a;
+  --ui-500: #666;
+  --ui-300: #aaa;
+  --ui-white: #fff;
 }
 
 .pill-group {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 8px;
   margin-top: 22px;
 }
 
@@ -18,92 +21,63 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 9px;
-  min-width: 132px;
-  min-height: 52px;
-  padding: 0 20px;
-  border: 1px solid var(--pill-ring);
+  gap: 8px;
+  min-width: 128px;
+  min-height: 48px;
+  padding: 0 18px;
+  border: 1px solid var(--ui-700);
   border-radius: 999px;
-  background:
-    radial-gradient(circle at 28% 18%, rgba(255,255,255,.10), transparent 32%),
-    radial-gradient(circle at 78% 115%, rgba(255,255,255,.055), transparent 42%),
-    linear-gradient(180deg, var(--pill-bg-2), var(--pill-bg-1));
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.07),
-    0 10px 22px var(--pill-shadow);
-  color: var(--pill-text);
+  background: var(--ui-900);
+  color: var(--ui-white);
   font: inherit;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: .075em;
   text-transform: uppercase;
   text-decoration: none;
   cursor: pointer;
-  overflow: hidden;
-  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease, background .18s ease;
-}
-
-.pill::before {
-  content: "";
-  position: absolute;
-  inset: 1px;
-  border-radius: inherit;
-  border: 1px solid rgba(255,255,255,.045);
-  pointer-events: none;
-}
-
-.pill::after {
-  content: "";
-  position: absolute;
-  width: 62px;
-  height: 62px;
-  left: 18%;
-  top: -35%;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255,255,255,.11), transparent 68%);
-  pointer-events: none;
+  transition:
+    background .15s ease,
+    color .15s ease,
+    border-color .15s ease,
+    transform .15s ease;
 }
 
 .pill:hover,
 .pill:focus-visible {
-  transform: translateY(-1px);
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.10),
-    0 15px 28px rgba(0,0,0,.42),
-    0 0 0 3px rgba(255,255,255,.025);
-  border-color: rgba(255,255,255,.38);
+  background: var(--ui-white);
+  color: var(--ui-black);
+  border-color: var(--ui-white);
   outline: none;
 }
 
 .pill:active { transform: scale(.985); }
 
 .pill__dot {
-  position: relative;
-  z-index: 1;
-  width: 9px;
-  height: 9px;
+  width: 8px;
+  height: 8px;
+  flex: 0 0 8px;
   border-radius: 50%;
-  background: #fff;
-  box-shadow: 0 0 0 4px rgba(255,255,255,.055), 0 0 16px rgba(255,255,255,.16);
+  background: currentColor;
 }
 
 .pill--soft,
 .pill--ghost,
-.pill--glow,
-.pill--circle {
-  --pill-bg-1: #101010;
-  --pill-bg-2: #1c1c1c;
+.pill--glow {
+  background: var(--ui-900);
+  color: var(--ui-white);
 }
 
 .pill--circle {
-  width: 52px;
-  min-width: 52px;
-  min-height: 52px;
+  width: 48px;
+  min-width: 48px;
+  min-height: 48px;
   padding: 0;
+  border-radius: 50%;
 }
 
 .pill--circle .pill__dot {
-  width: 11px;
-  height: 11px;
+  width: 10px;
+  height: 10px;
 }
 
