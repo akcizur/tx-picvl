@@ -6,7 +6,8 @@
   <title>AKCIZUR — About me</title>
   <meta name="description" content="AKCIZUR — software, web, games and experiments.">
   <meta name="theme-color" content="#000000">
-  <link rel="preload" href="./fonts/czech/roboto.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="./fonts/czech/roboto.woff2" as="font" type="font/woff2" crossorigin fetchpriority="high">
+  <link rel="preload" href="./fonts-czech-local.js" as="script" fetchpriority="low">
   <link rel="stylesheet" href="./ui-assets/pill-buttons.css">
   <style>
     :root {
@@ -406,6 +407,18 @@
         }
       };
 
+      const warmFont = (item) => {
+        if (!item?.file) return;
+        fetch(item.file, { cache: "force-cache", credentials: "same-origin" }).catch(() => {});
+      };
+
+      const warmAround = () => {
+        if (!fonts.length) return;
+        warmFont(fonts[index]);
+        warmFont(fonts[(index + 1) % fonts.length]);
+        warmFont(fonts[(index - 1 + fonts.length) % fonts.length]);
+      };
+
       const selectIndex = (nextIndex, save = true) => {
         if (!fonts.length) return;
         index = (nextIndex + fonts.length) % fonts.length;
@@ -413,6 +426,7 @@
         fontSelect.value = item.fontName;
         loadLocalFont(item);
         applyFont(item.fontName, save);
+        warmAround();
       };
 
       const populate = (catalog) => {
@@ -449,6 +463,9 @@
 
         const defaultIndex = fonts.findIndex(item => item.fontName === DEFAULT_FONT);
         selectIndex(defaultIndex >= 0 ? defaultIndex : 0, false);
+
+        const idle = window.requestIdleCallback || ((callback) => setTimeout(callback, 180));
+        idle(warmAround);
       };
 
       fontSelect.addEventListener("change", () => {
