@@ -1,0 +1,53 @@
+name: Vendor Czech Google Fonts
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "fonts-czech.json"
+      - "scripts/vendor-google-fonts.mjs"
+      - ".github/workflows/vendor-fonts.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: vendor-fonts
+  cancel-in-progress: true
+
+jobs:
+  vendor:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Download Czech Google Fonts
+        run: node scripts/vendor-google-fonts.mjs
+
+      - name: Validate vendor set
+        run: |
+          test -s fonts-czech-local.json
+          test -d fonts/czech
+          test "$(find fonts/czech -type f -name '*.woff2' | wc -l)" -gt 0
+          node -e "const x=require('./fonts-czech-local.json'); if (x.downloadedCount < 500) process.exit(1); console.log('Vendored fonts:', x.downloadedCount, 'failed:', x.failedCount)"
+
+      - name: Commit vendored fonts
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add fonts-czech-local.json fonts/czech
+          if git diff --cached --quiet; then
+            echo "No font changes."
+            exit 0
+          fi
+          git commit -m "chore: vendor Czech Google Fonts [skip ci]"
+          git push
