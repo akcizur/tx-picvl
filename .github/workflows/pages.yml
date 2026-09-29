@@ -21,21 +21,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-        with:
-          enablement: true
-
-      - name: Build with Jekyll
-        uses: actions/jekyll-build-pages@v1
-        with:
-          source: ./
-          destination: ./_site
+      - name: Build site
+        run: |
+          rm -rf dist
+          mkdir -p dist
+          cp index.html dist/index.html
+          cp aboutme.md dist/aboutme.md
+          test -s dist/index.html
+          test -s dist/aboutme.md
+          grep -q '</html>' dist/index.html
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v4
         with:
-          path: ./_site
+          path: ./dist
 
   deploy:
     environment:
