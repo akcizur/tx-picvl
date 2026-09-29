@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-09-29T17:06:44.968Z",
-  "sourceCount": 598,
-  "downloadedCount": 598,
+  "generatedAt": "2026-09-29T18:03:24.984Z",
+  "sourceCount": 610,
+  "downloadedCount": 610,
   "failedCount": 0,
   "fonts": [
     {
@@ -67,6 +67,14 @@
       "source": "Google Fonts CSS2 / latin-ext",
       "cssUrl": "https://fonts.googleapis.com/css2?family=Alatsi&display=swap",
       "bytes": 378396
+    },
+    {
+      "fontName": "Albert Sans",
+      "confidence": "HIGHEST",
+      "file": "fonts/czech/albert-sans.woff2",
+      "source": "Google Fonts CSS2 / latin-ext",
+      "cssUrl": "https://fonts.googleapis.com/css2?family=Albert%20Sans&display=swap",
+      "bytes": 44584
     },
     {
       "fontName": "Alegreya",
@@ -755,6 +763,14 @@
       "source": "Google Fonts CSS2 / latin-ext",
       "cssUrl": "https://fonts.googleapis.com/css2?family=Bree%20Serif&display=swap",
       "bytes": 43000
+    },
+    {
+      "fontName": "Bricolage Grotesque",
+      "confidence": "HIGHEST",
+      "file": "fonts/czech/bricolage-grotesque.woff2",
+      "source": "Google Fonts CSS2 / latin-ext",
+      "cssUrl": "https://fonts.googleapis.com/css2?family=Bricolage%20Grotesque&display=swap",
+      "bytes": 82192
     },
     {
       "fontName": "Bubblegum Sans",
@@ -1637,6 +1653,14 @@
       "bytes": 40696
     },
     {
+      "fontName": "Figtree",
+      "confidence": "HIGHEST",
+      "file": "fonts/czech/figtree.woff2",
+      "source": "Google Fonts CSS2 / latin-ext",
+      "cssUrl": "https://fonts.googleapis.com/css2?family=Figtree&display=swap",
+      "bytes": 35976
+    },
+    {
       "fontName": "Fira Code",
       "confidence": "HIGHEST",
       "file": "fonts/czech/fira-code.woff2",
@@ -2101,6 +2125,14 @@
       "bytes": 79060
     },
     {
+      "fontName": "Instrument Sans",
+      "confidence": "HIGHEST",
+      "file": "fonts/czech/instrument-sans.woff2",
+      "source": "Google Fonts CSS2 / latin-ext",
+      "cssUrl": "https://fonts.googleapis.com/css2?family=Instrument%20Sans&display=swap",
+      "bytes": 48616
+    },
+    {
       "fontName": "Inter",
       "confidence": "HIGHEST",
       "file": "fonts/czech/inter.woff2",
@@ -2246,7 +2278,7 @@
     },
     {
       "fontName": "Karla",
-      "confidence": "LOW",
+      "confidence": "HIGHEST",
       "file": "fonts/czech/karla.woff2",
       "source": "Google Fonts CSS2 / latin-ext",
       "cssUrl": "https://fonts.googleapis.com/css2?family=Karla&display=swap",
@@ -2467,6 +2499,14 @@
       "source": "Google Fonts CSS2 / latin-ext",
       "cssUrl": "https://fonts.googleapis.com/css2?family=Lemonada&display=swap",
       "bytes": 89640
+    },
+    {
+      "fontName": "Lexend",
+      "confidence": "HIGHEST",
+      "file": "fonts/czech/lexend.woff2",
+      "source": "Google Fonts CSS2 / latin-ext",
+      "cssUrl": "https://fonts.googleapis.com/css2?family=Lexend&display=swap",
+      "bytes": 70700
     },
     {
       "fontName": "Lexend Deca",
@@ -3021,6 +3061,14 @@
       "bytes": 88112
     },
     {
+      "fontName": "Mulish",
+      "confidence": "HIGHEST",
+      "file": "fonts/czech/mulish.woff2",
+      "source": "Google Fonts CSS2 / latin-ext",
+      "cssUrl": "https://fonts.googleapis.com/css2?family=Mulish&display=swap",
+      "bytes": 103364
+    },
+    {
       "fontName": "Mystery Quest",
       "confidence": "HIGH",
       "file": "fonts/czech/mystery-quest.woff2",
@@ -3203,6 +3251,14 @@
       "source": "Google Fonts CSS2 / latin-ext",
       "cssUrl": "https://fonts.googleapis.com/css2?family=Oswald&display=swap",
       "bytes": 86068
+    },
+    {
+      "fontName": "Outfit",
+      "confidence": "HIGHEST",
+      "file": "fonts/czech/outfit.woff2",
+      "source": "Google Fonts CSS2 / latin-ext",
+      "cssUrl": "https://fonts.googleapis.com/css2?family=Outfit&display=swap",
+      "bytes": 47844
     },
     {
       "fontName": "Overlock",
@@ -3443,6 +3499,14 @@
       "source": "Google Fonts CSS2 / latin-ext",
       "cssUrl": "https://fonts.googleapis.com/css2?family=Playfair%20Display%20SC&display=swap",
       "bytes": 128324
+    },
+    {
+      "fontName": "Plus Jakarta Sans",
+      "confidence": "HIGHEST",
+      "file": "fonts/czech/plus-jakarta-sans.woff2",
+      "source": "Google Fonts CSS2 / latin-ext",
+      "cssUrl": "https://fonts.googleapis.com/css2?family=Plus%20Jakarta%20Sans&display=swap",
+      "bytes": 63336
     },
     {
       "fontName": "Podkova",
@@ -3747,6 +3811,14 @@
       "source": "Google Fonts CSS2 / latin-ext",
       "cssUrl": "https://fonts.googleapis.com/css2?family=Red%20Hat%20Display&display=swap",
       "bytes": 47276
+    },
+    {
+      "fontName": "Red Hat Mono",
+      "confidence": "HIGHEST",
+      "file": "fonts/czech/red-hat-mono.woff2",
+      "source": "Google Fonts CSS2 / latin-ext",
+      "cssUrl": "https://fonts.googleapis.com/css2?family=Red%20Hat%20Mono&display=swap",
+      "bytes": 31348
     },
     {
       "fontName": "Red Hat Text",
@@ -4277,6 +4349,14 @@
       "bytes": 71716
     },
     {
+      "fontName": "Sora",
+      "confidence": "HIGHEST",
+      "file": "fonts/czech/sora.woff2",
+      "source": "Google Fonts CSS2 / latin-ext",
+      "cssUrl": "https://fonts.googleapis.com/css2?family=Sora&display=swap",
+      "bytes": 46040
+    },
+    {
       "fontName": "Sorts Mill Goudy",
       "confidence": "HIGHEST",
       "file": "fonts/czech/sorts-mill-goudy.woff2",
@@ -4307,6 +4387,14 @@
       "source": "Google Fonts CSS2 / latin-ext",
       "cssUrl": "https://fonts.googleapis.com/css2?family=Source%20Serif%20Pro&display=swap",
       "bytes": 159600
+    },
+    {
+      "fontName": "Space Grotesk",
+      "confidence": "HIGHEST",
+      "file": "fonts/czech/space-grotesk.woff2",
+      "source": "Google Fonts CSS2 / latin-ext",
+      "cssUrl": "https://fonts.googleapis.com/css2?family=Space%20Grotesk&display=swap",
+      "bytes": 69360
     },
     {
       "fontName": "Space Mono",
@@ -4619,6 +4707,14 @@
       "source": "Google Fonts CSS2 / latin-ext",
       "cssUrl": "https://fonts.googleapis.com/css2?family=Unna&display=swap",
       "bytes": 68020
+    },
+    {
+      "fontName": "Urbanist",
+      "confidence": "HIGHEST",
+      "file": "fonts/czech/urbanist.woff2",
+      "source": "Google Fonts CSS2 / latin-ext",
+      "cssUrl": "https://fonts.googleapis.com/css2?family=Urbanist&display=swap",
+      "bytes": 41060
     },
     {
       "fontName": "Vampiro One",
