@@ -5,6 +5,27 @@ const OUT_DIR = new URL("../fonts/czech/", import.meta.url);
 const OUT_CATALOG = new URL("../fonts-czech-local.json", import.meta.url);
 const OUT_SCRIPT = new URL("../fonts-czech-local.js", import.meta.url);
 
+// Additional modern open-source Google Fonts not present in the legacy catalog.
+// They are vendored locally as Czech latin-ext WOFF2 files by this workflow.
+const EXTRA_FONTS = [
+  { fontName: "Figtree", confidence: "HIGHEST" },
+  { fontName: "Manrope", confidence: "HIGHEST" },
+  { fontName: "Plus Jakarta Sans", confidence: "HIGHEST" },
+  { fontName: "Space Grotesk", confidence: "HIGHEST" },
+  { fontName: "Sora", confidence: "HIGHEST" },
+  { fontName: "Outfit", confidence: "HIGHEST" },
+  { fontName: "Urbanist", confidence: "HIGHEST" },
+  { fontName: "Inter", confidence: "HIGHEST" },
+  { fontName: "Lato", confidence: "HIGHEST" },
+  { fontName: "Lexend", confidence: "HIGHEST" },
+  { fontName: "Karla", confidence: "HIGHEST" },
+  { fontName: "Mulish", confidence: "HIGHEST" },
+  { fontName: "Instrument Sans", confidence: "HIGHEST" },
+  { fontName: "Albert Sans", confidence: "HIGHEST" },
+  { fontName: "Red Hat Mono", confidence: "HIGHEST" },
+  { fontName: "Bricolage Grotesque", confidence: "HIGHEST" }
+];
+
 const concurrency = 8;
 
 function slugify(value) {
@@ -55,7 +76,13 @@ async function fetchFont(font) {
 }
 
 async function main() {
-  const catalog = JSON.parse(await (await import("node:fs/promises")).readFile(SOURCE, "utf8"));
+  const baseCatalog = JSON.parse(await (await import("node:fs/promises")).readFile(SOURCE, "utf8"));
+
+  // Merge by font name so reruns never create duplicates.
+  const byName = new Map(baseCatalog.map((font) => [font.fontName, font]));
+  for (const font of EXTRA_FONTS) byName.set(font.fontName, font);
+  const catalog = [...byName.values()];
+
   await mkdir(OUT_DIR, { recursive: true });
 
   const success = [];
@@ -73,7 +100,11 @@ async function main() {
         success.push(result);
         process.stdout.write(`✓ ${font.fontName}\n`);
       } catch (error) {
-        failed.push({ fontName: font.fontName, confidence: font.confidence, error: String(error?.message ?? error) });
+        failed.push({
+          fontName: font.fontName,
+          confidence: font.confidence,
+          error: String(error?.message ?? error)
+        });
         process.stderr.write(`× ${font.fontName}: ${String(error?.message ?? error)}\n`);
       }
     }
