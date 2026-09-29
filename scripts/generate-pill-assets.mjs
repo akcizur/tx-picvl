@@ -1,414 +1,119 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AKCIZUR — About me</title>
-  <meta name="description" content="AKCIZUR — software, web, games and experiments.">
-  <link rel="stylesheet" href="./ui-assets/pill-buttons.css">
-  <style>
-    :root { color-scheme: dark; }
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: "Google Sans", "Google Sans Text", Roboto, ui-sans-serif, system-ui, sans-serif;
-      font-weight: 400;
-      font-optical-sizing: auto;
-      font-synthesis: auto;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      text-rendering: optimizeLegibility;
-      background: #0a0a0a;
-      color: #f5f5f5;
-    }
+import { mkdir, writeFile } from "node:fs/promises";
 
-    .navbar {
-      position: fixed;
-      inset: 0 0 auto;
-      z-index: 50;
-      min-height: 64px;
-      padding: 10px 14px;
-      border-bottom: 1px solid #202020;
-      background: rgba(10, 10, 10, .86);
-      backdrop-filter: blur(18px) saturate(120%);
-      -webkit-backdrop-filter: blur(18px) saturate(120%);
-    }
-    .navbar-inner {
-      width: min(1180px, calc(100% - 16px));
-      min-height: 44px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-    }
-    .brand {
-      color: #fff;
-      text-decoration: none;
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: .12em;
-      white-space: nowrap;
-    }
-    .font-control {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      min-width: 0;
-    }
-    .font-meta {
-      display: none;
-      color: #666;
-      font-size: 10px;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-      white-space: nowrap;
-    }
-    .font-button,
-    .font-select {
-      height: 38px;
-      border: 1px solid #303030;
-      background: #111;
-      color: #eee;
-      border-radius: 10px;
-      font: inherit;
-    }
-    .font-button {
-      width: 38px;
-      min-width: 38px;
-      padding: 0;
-      cursor: pointer;
-      font-size: 18px;
-      line-height: 1;
-      transition: border-color .16s ease, background .16s ease, transform .16s ease;
-    }
-    .font-button:hover {
-      border-color: #666;
-      background: #171717;
-    }
-    .font-button:active { transform: translateY(1px); }
-    .font-select {
-      width: min(330px, 42vw);
-      min-width: 190px;
-      padding: 0 12px;
-      outline: none;
-      cursor: pointer;
-      font-size: 13px;
-    }
-    .font-select:focus,
-    .font-button:focus-visible {
-      border-color: #888;
-      outline: 2px solid #fff;
-      outline-offset: 2px;
-    }
-    .font-status {
-      color: #8a8a8a;
-      font-size: 11px;
-      white-space: nowrap;
-      min-width: 82px;
-      text-align: right;
-    }
+const OUTPUT_DIR = new URL("../ui-assets/", import.meta.url);
+const OUTPUT_FILE = new URL("pill-buttons.css", OUTPUT_DIR);
 
-    main {
-      width: min(820px, calc(100% - 48px));
-      padding: 132px 0 clamp(48px, 8vw, 88px);
-      margin: 0 auto;
-    }
-    .eyebrow {
-      color: #8a8a8a;
-      letter-spacing: .13em;
-      text-transform: uppercase;
-      font-size: 12px;
-      font-weight: 600;
-      line-height: 1.25;
-    }
-    h1 {
-      font-size: clamp(56px, 8.5vw, 104px);
-      line-height: .9;
-      margin: 18px 0 28px;
-      letter-spacing: -.065em;
-      font-weight: 700;
-      max-width: 9ch;
-    }
-    h2 {
-      margin-top: 56px;
-      font-size: clamp(19px, 2.2vw, 22px);
-      line-height: 1.2;
-      letter-spacing: -.025em;
-      font-weight: 600;
-    }
-    p, li {
-      color: #b8b8b8;
-      line-height: 1.72;
-      font-size: clamp(17px, 1.5vw, 19px);
-      font-weight: 400;
-      letter-spacing: -.008em;
-    }
-    ul { padding-left: 20px; }
-    a {
-      color: #fff;
-      font-weight: 500;
-      letter-spacing: -.008em;
-    }
-    .links { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 32px; }
-    .links a {
-      border-bottom: 1px solid #555;
-      text-decoration: none;
-      padding-bottom: 5px;
-      font-size: 15px;
-      line-height: 1.3;
-      transition: color .2s ease, border-color .2s ease;
-    }
-    .links a:hover {
-      color: #fff;
-      border-color: #aaa;
-    }
-    .asset-demo {
-      margin-top: 56px;
-    }
-    .pill-group {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 14px;
-      margin-top: 22px;
-    }
-    footer {
-      margin-top: 64px;
-      color: #555;
-      font-size: 12px;
-      line-height: 1.45;
-      font-weight: 500;
-      letter-spacing: .012em;
-    }
+const palette = {
+  glow: ["#8b5cf6", "#a78bfa"],
+  soft: ["#f97316", "#fdba74"],
+  ghost: ["#06b6d4", "#67e8f9"],
+  circle: ["#f43f5e", "#fb7185"],
+};
 
-    @media (min-width: 760px) {
-      .font-meta { display: inline; }
-    }
-    @media (max-width: 620px) {
-      .navbar { padding: 8px 10px; }
-      .navbar-inner { gap: 8px; }
-      .brand { font-size: 11px; }
-      .font-select { min-width: 0; width: 44vw; }
-      .font-status { display: none; }
-      main { width: min(100% - 32px, 820px); padding-top: 116px; }
-    }
-  </style>
-</head>
-<body>
-  <nav class="navbar" aria-label="Site navigation">
-    <div class="navbar-inner">
-      <a class="brand" href="/" aria-label="AKCIZUR home">AKCIZUR</a>
+function buildCss() {
+  return `
+:root {
+  --pill-bg-1: rgba(20, 20, 28, 0.96);
+  --pill-bg-2: rgba(30, 30, 40, 0.92);
+  --pill-ring: rgba(255, 255, 255, 0.24);
+  --pill-shadow: rgba(15, 23, 42, 0.35);
+  --pill-text: #f8fafc;
+}
 
-      <div class="font-control" aria-label="Google Fonts selector">
-        <span class="font-meta" id="fontMeta">CZECH GOOGLE FONTS</span>
-        <button class="font-button" id="fontPrev" type="button" aria-label="Previous font" title="Previous font">←</button>
-        <select class="font-select" id="fontSelect" aria-label="Select Czech Google Font"></select>
-        <button class="font-button" id="fontNext" type="button" aria-label="Next font" title="Next font">→</button>
-        <span class="font-status" id="fontStatus" aria-live="polite">loading…</span>
-      </div>
-    </div>
-  </nav>
+.pill-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 22px;
+}
 
-  <main>
-    <div class="eyebrow">AKCIZUR · software · web · games · experiments</div>
-    <h1>Jakub Růžička</h1>
-    <p>I build small, focused digital products and prototypes across web development, game development, UI systems and automation.</p>
+.pill {
+  --pill-gradient-a: ${palette.glow[0]};
+  --pill-gradient-b: ${palette.glow[1]};
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-width: 146px;
+  min-height: 58px;
+  padding: 0 22px;
+  border: 1px solid var(--pill-ring);
+  border-radius: 999px;
+  background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.32), transparent 28%),
+              linear-gradient(135deg, var(--pill-gradient-a), var(--pill-gradient-b));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.22), 0 10px 24px var(--pill-shadow);
+  color: var(--pill-text);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
 
-    <h2>Focus</h2>
-    <ul>
-      <li>TypeScript, JavaScript, React, Vite, Next.js</li>
-      <li>Pixel-art and Phaser game projects</li>
-      <li>UI systems and frontend prototypes</li>
-      <li>GitHub Pages and lightweight deployments</li>
-      <li>Practical automation and tooling</li>
-    </ul>
+.pill::before {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border-radius: inherit;
+  border: 1px solid rgba(255,255,255,0.08);
+  pointer-events: none;
+}
 
-    <h2>Selected projects</h2>
-    <div class="links">
-      <a href="https://github.com/akcizur">GitHub</a>
-      <a href="https://akcizur.github.io/mygame/">YEAR 24</a>
-      <a href="https://ruzickajakub.cz/">Portfolio</a>
-      <a href="aboutme.md">aboutme.md</a>
-    </div>
+.pill:hover,
+.pill:focus-visible {
+  transform: translateY(-1px);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.24), 0 16px 30px rgba(15, 23, 42, 0.42);
+  border-color: rgba(255,255,255,0.4);
+  outline: none;
+}
 
-    <section class="asset-demo" aria-labelledby="ui-assets-title">
-      <div class="eyebrow">UI assets</div>
-      <h2 id="ui-assets-title">Radial pill buttons</h2>
-      <div class="pill-group" role="group" aria-label="Pill button styles">
-        <button class="pill pill--glow" type="button"><span class="pill__dot"></span> Launch</button>
-        <button class="pill pill--soft" type="button"><span class="pill__dot"></span> Explore</button>
-        <button class="pill pill--ghost" type="button"><span class="pill__dot"></span> Learn</button>
-        <button class="pill pill--circle" type="button" aria-label="Play"><span class="pill__dot"></span></button>
-      </div>
-    </section>
+.pill:active {
+  transform: translateY(0);
+}
 
-    <footer>Built with GitHub Pages.</footer>
-  </main>
+.pill__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.95);
+  box-shadow: 0 0 12px rgba(255,255,255,0.65);
+}
 
-  <script src="./fonts-czech-local.js"></script>
-  <script>
-    (() => {
-      const STORAGE_KEY = "tx-picvl-font";
-      const EMBEDDED_CATALOG = window.__TX_PICVL_FONT_CATALOG__?.fonts ?? null;
-      const CATALOG_URL = "./fonts-czech-local.json";
-      const DEFAULT_FONT = "Google Sans";
-      const fontSelect = document.getElementById("fontSelect");
-      const fontPrev = document.getElementById("fontPrev");
-      const fontNext = document.getElementById("fontNext");
-      const fontStatus = document.getElementById("fontStatus");
-      const fontMeta = document.getElementById("fontMeta");
-      const styleId = "active-google-font";
+.pill--soft {
+  --pill-gradient-a: ${palette.soft[0]};
+  --pill-gradient-b: ${palette.soft[1]};
+}
 
-      let fonts = [];
-      let index = 0;
+.pill--ghost {
+  --pill-gradient-a: ${palette.ghost[0]};
+  --pill-gradient-b: ${palette.ghost[1]};
+}
 
-      const setStatus = (text) => {
-        fontStatus.textContent = text;
-      };
+.pill--glow {
+  --pill-gradient-a: ${palette.glow[0]};
+  --pill-gradient-b: ${palette.glow[1]};
+}
 
-      const familyParam = (family) =>
-        encodeURIComponent(family).replace(/%20/g, "+");
+.pill--circle {
+  width: 58px;
+  min-width: 58px;
+  min-height: 58px;
+  padding: 0;
+  --pill-gradient-a: ${palette.circle[0]};
+  --pill-gradient-b: ${palette.circle[1]};
+}
 
-      const loadLocalFont = (item) => {
-        if (!item?.file) return false;
-        let style = document.getElementById(styleId);
-        if (!style) {
-          style = document.createElement("style");
-          style.id = styleId;
-          document.head.appendChild(style);
-        }
-        const family = item.fontName.replace(/["\\]/g, "\\$&");
-        style.textContent =
-          "@font-face{" +
-          'font-family:"' + family + '";' +
-          "src:url('" + item.file + "') format('woff2');" +
-          "font-display:swap;" +
-          "font-weight:400;" +
-          "font-style:normal;" +
-          "}" ;
-        return true;
-      };
+.pill--circle .pill__dot {
+  width: 12px;
+  height: 12px;
+}
+`;
+}
 
-      const applyFont = (family, save = true) => {
-        document.documentElement.style.setProperty(
-          "--active-font",
-          '"' + family.replace(/"/g, '\"') + '", "Google Sans", "Google Sans Text", Roboto, ui-sans-serif, system-ui, sans-serif'
-        );
-        document.body.style.fontFamily =
-          getComputedStyle(document.documentElement).getPropertyValue("--active-font");
-
-        const item = fonts[index];
-        const confidence = item?.confidence ?? "LOCAL";
-        fontMeta.textContent = "CZECH GOOGLE FONTS";
-        setStatus(confidence + " · " + (index + 1) + "/" + fonts.length);
-
-        if (save) {
-          try { localStorage.setItem(STORAGE_KEY, family); } catch {}
-        }
-      };
-
-      const selectIndex = (nextIndex, save = true) => {
-        if (!fonts.length) return;
-        index = (nextIndex + fonts.length) % fonts.length;
-        const item = fonts[index];
-        fontSelect.value = item.fontName;
-        loadLocalFont(item);
-        applyFont(item.fontName, save);
-      };
-
-      const populate = (catalog) => {
-        const unique = new Map();
-        for (const item of catalog) {
-          if (!item?.fontName || !item?.file) continue;
-          if (!unique.has(item.fontName)) unique.set(item.fontName, {
-            fontName: item.fontName,
-            confidence: item.confidence || "UNKNOWN",
-            file: item.file
-          });
-        }
-
-        fonts = [...unique.values()].filter(item => item.file).sort((a, b) => {
-          const rank = { HIGHEST: 0, HIGH: 1, MEDIUM: 2, LOW: 3, LOWEST: 4, UNKNOWN: 5 };
-          const byConfidence = (rank[a.confidence] ?? 5) - (rank[b.confidence] ?? 5);
-          return byConfidence || a.fontName.localeCompare(b.fontName);
-        });
-
-        fontSelect.replaceChildren(...fonts.map((item) => {
-          const option = document.createElement("option");
-          option.value = item.fontName;
-          option.textContent = item.fontName + " · " + item.confidence;
-          return option;
-        }));
-
-        let wanted = null;
-        try { wanted = localStorage.getItem(STORAGE_KEY); } catch {}
-        const wantedIndex = fonts.findIndex(item => item.fontName === wanted);
-        if (wantedIndex >= 0) {
-          selectIndex(wantedIndex, false);
-          return;
-        }
-
-        const defaultIndex = fonts.findIndex(item => item.fontName === DEFAULT_FONT);
-        selectIndex(defaultIndex >= 0 ? defaultIndex : 0, false);
-      };
-
-      fontSelect.addEventListener("change", () => {
-        const nextIndex = fonts.findIndex(item => item.fontName === fontSelect.value);
-        if (nextIndex >= 0) selectIndex(nextIndex);
-      });
-
-      fontPrev.addEventListener("click", () => selectIndex(index - 1));
-      fontNext.addEventListener("click", () => selectIndex(index + 1));
-
-      window.addEventListener("keydown", (event) => {
-        if (event.altKey || event.ctrlKey || event.metaKey) return;
-        const tag = document.activeElement?.tagName;
-        if (tag === "INPUT" || tag === "TEXTAREA") return;
-
-        if (event.key === "ArrowLeft") {
-          event.preventDefault();
-          selectIndex(index - 1);
-        } else if (event.key === "ArrowRight") {
-          event.preventDefault();
-          selectIndex(index + 1);
-        }
-      });
-
-      const loadCatalog = async () => {
-        try {
-          if (Array.isArray(EMBEDDED_CATALOG) && EMBEDDED_CATALOG.length) {
-            populate(EMBEDDED_CATALOG);
-            return;
-          }
-
-          const response = await fetch(CATALOG_URL, { cache: "no-cache" });
-          if (!response.ok) throw new Error("Font catalog HTTP " + response.status);
-          populate(await response.json());
-        } catch (error) {
-          console.error(error);
-
-          try {
-            const response = await fetch("./fonts-czech.json", { cache: "no-cache" });
-            if (!response.ok) throw new Error("Source font catalog HTTP " + response.status);
-            const catalog = await response.json();
-            populate(catalog.fonts ?? catalog);
-          } catch {
-            fontSelect.replaceChildren();
-            const option = document.createElement("option");
-            option.textContent = "Font catalog unavailable";
-            fontSelect.appendChild(option);
-            fontSelect.disabled = true;
-            fontPrev.disabled = true;
-            fontNext.disabled = true;
-            setStatus("offline");
-          }
-        }
-      };
-
-      loadCatalog();
-    })();
-  </script>
-</body>
-</html>
+await mkdir(new URL("./", OUTPUT_DIR), { recursive: true });
+await writeFile(OUTPUT_FILE, buildCss().trim() + "\n", "utf8");
+console.log(`Generated \${OUTPUT_FILE.pathname}`);

@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>AKCIZUR — About me</title>
   <meta name="description" content="AKCIZUR — software, web, games and experiments.">
+  <link rel="stylesheet" href="./ui-assets/pill-buttons.css">
   <style>
     :root { color-scheme: dark; }
     * { box-sizing: border-box; }
@@ -164,6 +165,9 @@
       color: #fff;
       border-color: #aaa;
     }
+    .asset-demo {
+      margin-top: 56px;
+    }
     footer {
       margin-top: 64px;
       color: #555;
@@ -222,6 +226,17 @@
       <a href="https://ruzickajakub.cz/">Portfolio</a>
       <a href="aboutme.md">aboutme.md</a>
     </div>
+
+    <section class="asset-demo" aria-labelledby="ui-assets-title">
+      <div class="eyebrow">UI assets</div>
+      <h2 id="ui-assets-title">Radial pill buttons</h2>
+      <div class="pill-group" role="group" aria-label="Pill button styles">
+        <button class="pill pill--glow" type="button"><span class="pill__dot"></span> Launch</button>
+        <button class="pill pill--soft" type="button"><span class="pill__dot"></span> Explore</button>
+        <button class="pill pill--ghost" type="button"><span class="pill__dot"></span> Learn</button>
+        <button class="pill pill--circle" type="button" aria-label="Play"><span class="pill__dot"></span></button>
+      </div>
+    </section>
 
     <footer>Built with GitHub Pages.</footer>
   </main>
