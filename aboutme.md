@@ -1,8 +1,3 @@
----
-title: About me
-layout: default
----
-
 # Jakub Růžička
 
 **AKCIZUR · software · web · games · experiments**
