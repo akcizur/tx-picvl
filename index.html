@@ -8,24 +8,112 @@
   <style>
     :root { color-scheme: dark; }
     * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
     body {
       margin: 0;
       min-height: 100vh;
       font-family: "Google Sans", "Google Sans Text", Roboto, ui-sans-serif, system-ui, sans-serif;
       font-weight: 400;
       font-optical-sizing: auto;
-      font-synthesis: none;
+      font-synthesis: auto;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       text-rendering: optimizeLegibility;
       background: #0a0a0a;
       color: #f5f5f5;
-      display: grid;
-      place-items: center;
     }
+
+    .navbar {
+      position: fixed;
+      inset: 0 0 auto;
+      z-index: 50;
+      min-height: 64px;
+      padding: 10px 14px;
+      border-bottom: 1px solid #202020;
+      background: rgba(10, 10, 10, .86);
+      backdrop-filter: blur(18px) saturate(120%);
+      -webkit-backdrop-filter: blur(18px) saturate(120%);
+    }
+    .navbar-inner {
+      width: min(1180px, calc(100% - 16px));
+      min-height: 44px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .brand {
+      color: #fff;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      white-space: nowrap;
+    }
+    .font-control {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+    }
+    .font-meta {
+      display: none;
+      color: #666;
+      font-size: 10px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .font-button,
+    .font-select {
+      height: 38px;
+      border: 1px solid #303030;
+      background: #111;
+      color: #eee;
+      border-radius: 10px;
+      font: inherit;
+    }
+    .font-button {
+      width: 38px;
+      min-width: 38px;
+      padding: 0;
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+      transition: border-color .16s ease, background .16s ease, transform .16s ease;
+    }
+    .font-button:hover {
+      border-color: #666;
+      background: #171717;
+    }
+    .font-button:active { transform: translateY(1px); }
+    .font-select {
+      width: min(330px, 42vw);
+      min-width: 190px;
+      padding: 0 12px;
+      outline: none;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    .font-select:focus,
+    .font-button:focus-visible {
+      border-color: #888;
+      outline: 2px solid #fff;
+      outline-offset: 2px;
+    }
+    .font-status {
+      color: #8a8a8a;
+      font-size: 11px;
+      white-space: nowrap;
+      min-width: 82px;
+      text-align: right;
+    }
+
     main {
       width: min(820px, calc(100% - 48px));
-      padding: clamp(48px, 8vw, 88px) 0;
+      padding: 132px 0 clamp(48px, 8vw, 88px);
+      margin: 0 auto;
     }
     .eyebrow {
       color: #8a8a8a;
@@ -84,9 +172,35 @@
       font-weight: 500;
       letter-spacing: .012em;
     }
+
+    @media (min-width: 760px) {
+      .font-meta { display: inline; }
+    }
+    @media (max-width: 620px) {
+      .navbar { padding: 8px 10px; }
+      .navbar-inner { gap: 8px; }
+      .brand { font-size: 11px; }
+      .font-select { min-width: 0; width: 44vw; }
+      .font-status { display: none; }
+      main { width: min(100% - 32px, 820px); padding-top: 116px; }
+    }
   </style>
 </head>
 <body>
+  <nav class="navbar" aria-label="Site navigation">
+    <div class="navbar-inner">
+      <a class="brand" href="/" aria-label="AKCIZUR home">AKCIZUR</a>
+
+      <div class="font-control" aria-label="Google Fonts selector">
+        <span class="font-meta" id="fontMeta">CZECH GOOGLE FONTS</span>
+        <button class="font-button" id="fontPrev" type="button" aria-label="Previous font" title="Previous font">←</button>
+        <select class="font-select" id="fontSelect" aria-label="Select Czech Google Font"></select>
+        <button class="font-button" id="fontNext" type="button" aria-label="Next font" title="Next font">→</button>
+        <span class="font-status" id="fontStatus" aria-live="polite">loading…</span>
+      </div>
+    </div>
+  </nav>
+
   <main>
     <div class="eyebrow">AKCIZUR · software · web · games · experiments</div>
     <h1>Jakub Růžička</h1>
@@ -111,5 +225,149 @@
 
     <footer>Built with GitHub Pages.</footer>
   </main>
+
+  <script>
+    (() => {
+      const STORAGE_KEY = "tx-picvl-font";
+      const CATALOG_URL = "./fonts-czech.json";
+      const DEFAULT_FONT = "Google Sans";
+      const fontSelect = document.getElementById("fontSelect");
+      const fontPrev = document.getElementById("fontPrev");
+      const fontNext = document.getElementById("fontNext");
+      const fontStatus = document.getElementById("fontStatus");
+      const fontMeta = document.getElementById("fontMeta");
+      const styleId = "active-google-font";
+
+      let fonts = [];
+      let index = 0;
+
+      const setStatus = (text) => {
+        fontStatus.textContent = text;
+      };
+
+      const familyParam = (family) =>
+        encodeURIComponent(family).replace(/%20/g, "+");
+
+      const loadGoogleFont = (family) => {
+        if (family === DEFAULT_FONT) {
+          document.getElementById(styleId)?.remove();
+          return;
+        }
+        let link = document.getElementById(styleId);
+        if (!link) {
+          link = document.createElement("link");
+          link.id = styleId;
+          link.rel = "stylesheet";
+          document.head.appendChild(link);
+        }
+        link.href =
+          "https://fonts.googleapis.com/css2?family=" +
+          familyParam(family) +
+          "&display=swap";
+      };
+
+      const applyFont = (family, save = true) => {
+        document.documentElement.style.setProperty(
+          "--active-font",
+          '"' + family.replace(/"/g, '\"') + '", "Google Sans", "Google Sans Text", Roboto, ui-sans-serif, system-ui, sans-serif'
+        );
+        document.body.style.fontFamily =
+          getComputedStyle(document.documentElement).getPropertyValue("--active-font");
+
+        const item = fonts[index];
+        const confidence = item?.confidence ?? "LOCAL";
+        fontMeta.textContent = "CZECH GOOGLE FONTS";
+        setStatus(confidence + " · " + (index + 1) + "/" + fonts.length);
+
+        if (save) {
+          try { localStorage.setItem(STORAGE_KEY, family); } catch {}
+        }
+      };
+
+      const selectIndex = (nextIndex, save = true) => {
+        if (!fonts.length) return;
+        index = (nextIndex + fonts.length) % fonts.length;
+        const item = fonts[index];
+        fontSelect.value = item.fontName;
+        loadGoogleFont(item.fontName);
+        applyFont(item.fontName, save);
+      };
+
+      const populate = (catalog) => {
+        const unique = new Map();
+        for (const item of catalog) {
+          if (!item?.fontName) continue;
+          if (!unique.has(item.fontName)) unique.set(item.fontName, {
+            fontName: item.fontName,
+            confidence: item.confidence || "UNKNOWN"
+          });
+        }
+
+        fonts = [...unique.values()].sort((a, b) => {
+          const rank = { HIGHEST: 0, HIGH: 1, MEDIUM: 2, LOW: 3, LOWEST: 4, UNKNOWN: 5 };
+          const byConfidence = (rank[a.confidence] ?? 5) - (rank[b.confidence] ?? 5);
+          return byConfidence || a.fontName.localeCompare(b.fontName);
+        });
+
+        fontSelect.replaceChildren(...fonts.map((item) => {
+          const option = document.createElement("option");
+          option.value = item.fontName;
+          option.textContent = item.fontName + " · " + item.confidence;
+          return option;
+        }));
+
+        let wanted = null;
+        try { wanted = localStorage.getItem(STORAGE_KEY); } catch {}
+        const wantedIndex = fonts.findIndex(item => item.fontName === wanted);
+        if (wantedIndex >= 0) {
+          selectIndex(wantedIndex, false);
+          return;
+        }
+
+        const defaultIndex = fonts.findIndex(item => item.fontName === DEFAULT_FONT);
+        selectIndex(defaultIndex >= 0 ? defaultIndex : 0, false);
+      };
+
+      fontSelect.addEventListener("change", () => {
+        const nextIndex = fonts.findIndex(item => item.fontName === fontSelect.value);
+        if (nextIndex >= 0) selectIndex(nextIndex);
+      });
+
+      fontPrev.addEventListener("click", () => selectIndex(index - 1));
+      fontNext.addEventListener("click", () => selectIndex(index + 1));
+
+      window.addEventListener("keydown", (event) => {
+        if (event.altKey || event.ctrlKey || event.metaKey) return;
+        const tag = document.activeElement?.tagName;
+        if (tag === "INPUT" || tag === "TEXTAREA") return;
+
+        if (event.key === "ArrowLeft") {
+          event.preventDefault();
+          selectIndex(index - 1);
+        } else if (event.key === "ArrowRight") {
+          event.preventDefault();
+          selectIndex(index + 1);
+        }
+      });
+
+      fetch(CATALOG_URL, { cache: "no-cache" })
+        .then((response) => {
+          if (!response.ok) throw new Error("Font catalog HTTP " + response.status);
+          return response.json();
+        })
+        .then(populate)
+        .catch((error) => {
+          console.error(error);
+          fontSelect.replaceChildren();
+          const option = document.createElement("option");
+          option.textContent = "Font catalog unavailable";
+          fontSelect.appendChild(option);
+          fontSelect.disabled = true;
+          fontPrev.disabled = true;
+          fontNext.disabled = true;
+          setStatus("offline");
+        });
+    })();
+  </script>
 </body>
 </html>
