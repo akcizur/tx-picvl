@@ -8,7 +8,10 @@
   <meta name="theme-color" content="#000000">
   <link rel="preload" href="./fonts/czech/roboto.woff2" as="font" type="font/woff2" crossorigin fetchpriority="high">
   <link rel="preload" href="./fonts-czech-local.js" as="script" fetchpriority="low">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
   <link rel="stylesheet" href="./ui-assets/pill-buttons.css">
+  <script src="https://cdn.jsdelivr.net/npm/lucide@1.48.0/dist/umd/lucide.min.js" defer crossorigin></script>
   <style>
     :root {
       color-scheme: dark;
@@ -153,6 +156,13 @@
       outline: none;
     }
     .font-button:active { transform: scale(.96); }
+    .font-button svg,
+    .pill svg {
+      width: 18px;
+      height: 18px;
+      stroke-width: 1.8;
+    }
+    .font-button svg { pointer-events: none; }
 
     .font-select {
       width: min(320px, 34vw);
@@ -192,8 +202,8 @@
     }
 
     main {
-      width: min(840px, calc(100% - 48px));
-      padding: 128px 0 80px;
+      width: min(760px, calc(100% - 48px));
+      padding: 120px 0 72px;
       margin: 0 auto;
     }
     .eyebrow {
@@ -213,8 +223,8 @@
       max-width: 9ch;
     }
     h2 {
-      margin-top: 48px;
-      margin-bottom: 16px;
+      margin-top: 40px;
+      margin-bottom: 12px;
       font-size: clamp(20px, 2.2vw, 24px);
       line-height: 1.2;
       letter-spacing: -.02em;
@@ -236,19 +246,19 @@
     .links {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 24px;
+      gap: 6px;
+      margin-top: 20px;
     }
     .links a {
       min-height: 40px;
       display: inline-flex;
       align-items: center;
-      padding: 0 14px;
+      padding: 0 12px;
       border: 1px solid var(--md-border);
       border-radius: var(--md-radius);
       background: var(--md-surface);
       text-decoration: none;
-      font-size: 14px;
+      font-size: 13px;
       transition: background var(--md-transition), color var(--md-transition), border-color var(--md-transition);
     }
     .links a:hover,
@@ -259,7 +269,7 @@
       outline: none;
     }
 
-    .asset-demo { margin-top: 48px; }
+    .asset-demo { margin-top: 40px; }
 
     footer {
       margin-top: 56px;
@@ -303,9 +313,9 @@
 
       <div class="font-control" aria-label="Google Fonts selector">
         <span class="font-meta" id="fontMeta">CZECH GOOGLE FONTS</span>
-        <button class="font-button" id="fontPrev" type="button" aria-label="Previous font" title="Previous font">←</button>
+        <button class="font-button" id="fontPrev" type="button" aria-label="Previous font" title="Previous font"><i data-lucide="chevron-left" aria-hidden="true"></i></button>
         <select class="font-select" id="fontSelect" aria-label="Select Czech Google Font"></select>
-        <button class="font-button" id="fontNext" type="button" aria-label="Next font" title="Next font">→</button>
+        <button class="font-button" id="fontNext" type="button" aria-label="Next font" title="Next font"><i data-lucide="chevron-right" aria-hidden="true"></i></button>
         <span class="font-status" id="fontStatus" aria-live="polite">loading…</span>
       </div>
     </div>
@@ -350,6 +360,7 @@
   <script src="./fonts-czech-local.js" defer></script>
   <script>
     window.addEventListener("DOMContentLoaded", () => {
+      if (window.lucide) window.lucide.createIcons();
       const STORAGE_KEY = "tx-picvl-font";
       const EMBEDDED_CATALOG = window.__TX_PICVL_FONT_CATALOG__?.fonts ?? null;
       const CATALOG_URL = "./fonts-czech-local.json";
