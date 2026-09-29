@@ -4,54 +4,55 @@ const OUTPUT_DIR = new URL("../ui-assets/", import.meta.url);
 const OUTPUT_FILE = new URL("pill-buttons.css", OUTPUT_DIR);
 
 const palette = {
-  glow: ["#8b5cf6", "#a78bfa"],
-  soft: ["#f97316", "#fdba74"],
-  ghost: ["#06b6d4", "#67e8f9"],
-  circle: ["#f43f5e", "#fb7185"],
+  surfaceA: "#101010",
+  surfaceB: "#1c1c1c",
 };
 
 function buildCss() {
   return `
 :root {
-  --pill-bg-1: rgba(20, 20, 28, 0.96);
-  --pill-bg-2: rgba(30, 30, 40, 0.92);
-  --pill-ring: rgba(255, 255, 255, 0.24);
-  --pill-shadow: rgba(15, 23, 42, 0.35);
-  --pill-text: #f8fafc;
+  --pill-bg-1: rgba(20, 20, 20, 0.98);
+  --pill-bg-2: rgba(30, 30, 30, 0.96);
+  --pill-ring: rgba(255, 255, 255, 0.16);
+  --pill-shadow: rgba(0, 0, 0, 0.34);
+  --pill-text: #f7f7f7;
 }
 
 .pill-group {
   display: flex;
   flex-wrap: wrap;
-  gap: 14px;
+  gap: 10px;
   margin-top: 22px;
 }
 
 .pill {
-  --pill-gradient-a: ${palette.glow[0]};
-  --pill-gradient-b: ${palette.glow[1]};
   position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  min-width: 146px;
-  min-height: 58px;
-  padding: 0 22px;
+  gap: 9px;
+  min-width: 132px;
+  min-height: 52px;
+  padding: 0 20px;
   border: 1px solid var(--pill-ring);
   border-radius: 999px;
-  background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.32), transparent 28%),
-              linear-gradient(135deg, var(--pill-gradient-a), var(--pill-gradient-b));
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.22), 0 10px 24px var(--pill-shadow);
+  background:
+    radial-gradient(circle at 28% 18%, rgba(255,255,255,.10), transparent 32%),
+    radial-gradient(circle at 78% 115%, rgba(255,255,255,.055), transparent 42%),
+    linear-gradient(180deg, var(--pill-bg-2), var(--pill-bg-1));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.07),
+    0 10px 22px var(--pill-shadow);
   color: var(--pill-text);
   font: inherit;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: .075em;
   text-transform: uppercase;
   text-decoration: none;
   cursor: pointer;
-  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  overflow: hidden;
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease, background .18s ease;
 }
 
 .pill::before {
@@ -59,61 +60,67 @@ function buildCss() {
   position: absolute;
   inset: 1px;
   border-radius: inherit;
-  border: 1px solid rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,.045);
+  pointer-events: none;
+}
+
+.pill::after {
+  content: "";
+  position: absolute;
+  width: 62px;
+  height: 62px;
+  left: 18%;
+  top: -35%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,.11), transparent 68%);
   pointer-events: none;
 }
 
 .pill:hover,
 .pill:focus-visible {
   transform: translateY(-1px);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.24), 0 16px 30px rgba(15, 23, 42, 0.42);
-  border-color: rgba(255,255,255,0.4);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.10),
+    0 15px 28px rgba(0,0,0,.42),
+    0 0 0 3px rgba(255,255,255,.025);
+  border-color: rgba(255,255,255,.38);
   outline: none;
 }
 
-.pill:active {
-  transform: translateY(0);
-}
+.pill:active { transform: scale(.985); }
 
 .pill__dot {
-  width: 10px;
-  height: 10px;
+  position: relative;
+  z-index: 1;
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
-  background: rgba(255,255,255,0.95);
-  box-shadow: 0 0 12px rgba(255,255,255,0.65);
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(255,255,255,.055), 0 0 16px rgba(255,255,255,.16);
 }
 
-.pill--soft {
-  --pill-gradient-a: ${palette.soft[0]};
-  --pill-gradient-b: ${palette.soft[1]};
-}
-
-.pill--ghost {
-  --pill-gradient-a: ${palette.ghost[0]};
-  --pill-gradient-b: ${palette.ghost[1]};
-}
-
-.pill--glow {
-  --pill-gradient-a: ${palette.glow[0]};
-  --pill-gradient-b: ${palette.glow[1]};
+.pill--soft,
+.pill--ghost,
+.pill--glow,
+.pill--circle {
+  --pill-bg-1: ${palette.surfaceA};
+  --pill-bg-2: ${palette.surfaceB};
 }
 
 .pill--circle {
-  width: 58px;
-  min-width: 58px;
-  min-height: 58px;
+  width: 52px;
+  min-width: 52px;
+  min-height: 52px;
   padding: 0;
-  --pill-gradient-a: ${palette.circle[0]};
-  --pill-gradient-b: ${palette.circle[1]};
 }
 
 .pill--circle .pill__dot {
-  width: 12px;
-  height: 12px;
+  width: 11px;
+  height: 11px;
 }
 `;
 }
 
 await mkdir(new URL("./", OUTPUT_DIR), { recursive: true });
 await writeFile(OUTPUT_FILE, buildCss().trim() + "\n", "utf8");
-console.log(`Generated \${OUTPUT_FILE.pathname}`);
+console.log(`Generated ${OUTPUT_FILE.pathname}`);
