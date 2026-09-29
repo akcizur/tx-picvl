@@ -226,9 +226,11 @@
     <footer>Built with GitHub Pages.</footer>
   </main>
 
+  <script src="./fonts-czech-local.js"></script>
   <script>
     (() => {
       const STORAGE_KEY = "tx-picvl-font";
+      const EMBEDDED_CATALOG = window.__TX_PICVL_FONT_CATALOG__?.fonts ?? null;
       const CATALOG_URL = "./fonts-czech-local.json";
       const DEFAULT_FONT = "Google Sans";
       const fontSelect = document.getElementById("fontSelect");
@@ -353,31 +355,38 @@
         }
       });
 
-      fetch(CATALOG_URL, { cache: "no-cache" })
-        .then((response) => {
+      const loadCatalog = async () => {
+        try {
+          if (Array.isArray(EMBEDDED_CATALOG) && EMBEDDED_CATALOG.length) {
+            populate(EMBEDDED_CATALOG);
+            return;
+          }
+
+          const response = await fetch(CATALOG_URL, { cache: "no-cache" });
           if (!response.ok) throw new Error("Font catalog HTTP " + response.status);
-          return response.json();
-        })
-        .then(populate)
-        .catch((error) => {
+          populate(await response.json());
+        } catch (error) {
           console.error(error);
-          fetch("./fonts-czech.json", { cache: "no-cache" })
-            .then((response) => {
-              if (!response.ok) throw new Error("Source font catalog HTTP " + response.status);
-              return response.json();
-            })
-            .then((catalog) => populate(catalog.fonts ?? catalog))
-            .catch(() => {
-              fontSelect.replaceChildren();
-              const option = document.createElement("option");
-              option.textContent = "Font catalog unavailable";
-              fontSelect.appendChild(option);
-              fontSelect.disabled = true;
-              fontPrev.disabled = true;
-              fontNext.disabled = true;
-              setStatus("offline");
-            });
-        });
+
+          try {
+            const response = await fetch("./fonts-czech.json", { cache: "no-cache" });
+            if (!response.ok) throw new Error("Source font catalog HTTP " + response.status);
+            const catalog = await response.json();
+            populate(catalog.fonts ?? catalog);
+          } catch {
+            fontSelect.replaceChildren();
+            const option = document.createElement("option");
+            option.textContent = "Font catalog unavailable";
+            fontSelect.appendChild(option);
+            fontSelect.disabled = true;
+            fontPrev.disabled = true;
+            fontNext.disabled = true;
+            setStatus("offline");
+          }
+        }
+      };
+
+      loadCatalog();
     })();
   </script>
 </body>
