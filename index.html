@@ -51,11 +51,11 @@
       inset: 0 0 auto;
       z-index: 50;
       min-height: 64px;
-      padding: var(--md-unit);
-      background: rgba(0,0,0,.96);
-      border-bottom: 1px solid #1d1d1d;
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      padding: var(--md-unit) 0;
+      background: rgba(0,0,0,.88);
+      border-bottom: 1px solid #1a1a1a;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
     }
     .navbar-inner {
       width: min(1180px, calc(100% - 2 * var(--md-unit)));
@@ -64,12 +64,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 8px;
-      padding: 4px;
-      border: 1px solid var(--md-border);
-      border-radius: var(--md-radius);
-      background: var(--md-surface);
-      box-shadow: var(--md-shadow-1);
+      gap: 12px;
     }
 
     .brand,
@@ -86,8 +81,8 @@
       gap: 8px;
       min-height: 40px;
       padding: 0 16px 0 12px;
-      border: 1px solid var(--md-border);
-      background: var(--md-surface-2);
+      border: 1px solid transparent;
+      background: #0d0d0d;
       color: var(--md-text);
       text-decoration: none;
       font-size: 12px;
@@ -116,15 +111,12 @@
       align-items: center;
       gap: 4px;
       min-width: 0;
-      padding: 4px;
-      border: 1px solid var(--md-border);
-      background: var(--md-surface);
     }
     .font-meta {
       display: none;
       align-items: center;
       min-height: 40px;
-      padding: 0 12px;
+      padding: 0 8px;
       color: var(--md-text-tertiary);
       font-size: 9px;
       font-weight: 700;
@@ -136,8 +128,8 @@
     .font-select,
     .font-status {
       height: 40px;
-      border: 1px solid var(--md-border);
-      background: var(--md-surface-2);
+      border: 1px solid transparent;
+      background: #0d0d0d;
       color: var(--md-text);
       font: inherit;
     }
@@ -190,8 +182,8 @@
       min-width: 76px;
       padding: 0 10px;
       color: var(--md-text-tertiary);
-      background: var(--md-surface);
-      border-color: #222;
+      background: transparent;
+      border-color: transparent;
       font-size: 9px;
       font-weight: 500;
       letter-spacing: .04em;
@@ -284,8 +276,8 @@
       .font-select { width: min(38vw, 280px); }
     }
     @media (max-width: 620px) {
-      .navbar { padding: 6px; }
-      .navbar-inner { gap: 4px; padding: 3px; }
+      .navbar { padding: 6px 4px; }
+      .navbar-inner { gap: 4px; }
       .brand { min-height: 40px; padding-right: 12px; font-size: 10px; }
       .font-control { flex: 1; justify-content: flex-end; }
       .font-select { min-width: 0; width: min(46vw, 220px); }
