@@ -229,7 +229,7 @@
   <script>
     (() => {
       const STORAGE_KEY = "tx-picvl-font";
-      const CATALOG_URL = "./fonts-czech.json";
+      const CATALOG_URL = "./fonts-czech-local.json";
       const DEFAULT_FONT = "Google Sans";
       const fontSelect = document.getElementById("fontSelect");
       const fontPrev = document.getElementById("fontPrev");
@@ -248,22 +248,24 @@
       const familyParam = (family) =>
         encodeURIComponent(family).replace(/%20/g, "+");
 
-      const loadGoogleFont = (family) => {
-        if (family === DEFAULT_FONT) {
-          document.getElementById(styleId)?.remove();
-          return;
+      const loadLocalFont = (item) => {
+        if (!item?.file) return false;
+        let style = document.getElementById(styleId);
+        if (!style) {
+          style = document.createElement("style");
+          style.id = styleId;
+          document.head.appendChild(style);
         }
-        let link = document.getElementById(styleId);
-        if (!link) {
-          link = document.createElement("link");
-          link.id = styleId;
-          link.rel = "stylesheet";
-          document.head.appendChild(link);
-        }
-        link.href =
-          "https://fonts.googleapis.com/css2?family=" +
-          familyParam(family) +
-          "&display=swap";
+        const family = item.fontName.replace(/["\\]/g, "\\$&");
+        style.textContent =
+          "@font-face{" +
+          'font-family:"' + family + '";' +
+          "src:url('" + item.file + "') format('woff2');" +
+          "font-display:swap;" +
+          "font-weight:100 900;" +
+          "font-style:normal;" +
+          "}" ;
+        return true;
       };
 
       const applyFont = (family, save = true) => {
@@ -289,21 +291,22 @@
         index = (nextIndex + fonts.length) % fonts.length;
         const item = fonts[index];
         fontSelect.value = item.fontName;
-        loadGoogleFont(item.fontName);
+        loadLocalFont(item);
         applyFont(item.fontName, save);
       };
 
       const populate = (catalog) => {
         const unique = new Map();
         for (const item of catalog) {
-          if (!item?.fontName) continue;
+          if (!item?.fontName || !item?.file) continue;
           if (!unique.has(item.fontName)) unique.set(item.fontName, {
             fontName: item.fontName,
-            confidence: item.confidence || "UNKNOWN"
+            confidence: item.confidence || "UNKNOWN",
+            file: item.file
           });
         }
 
-        fonts = [...unique.values()].sort((a, b) => {
+        fonts = [...unique.values()].filter(item => item.file).sort((a, b) => {
           const rank = { HIGHEST: 0, HIGH: 1, MEDIUM: 2, LOW: 3, LOWEST: 4, UNKNOWN: 5 };
           const byConfidence = (rank[a.confidence] ?? 5) - (rank[b.confidence] ?? 5);
           return byConfidence || a.fontName.localeCompare(b.fontName);
@@ -358,14 +361,22 @@
         .then(populate)
         .catch((error) => {
           console.error(error);
-          fontSelect.replaceChildren();
-          const option = document.createElement("option");
-          option.textContent = "Font catalog unavailable";
-          fontSelect.appendChild(option);
-          fontSelect.disabled = true;
-          fontPrev.disabled = true;
-          fontNext.disabled = true;
-          setStatus("offline");
+          fetch("./fonts-czech.json", { cache: "no-cache" })
+            .then((response) => {
+              if (!response.ok) throw new Error("Source font catalog HTTP " + response.status);
+              return response.json();
+            })
+            .then((catalog) => populate(catalog.fonts ?? catalog))
+            .catch(() => {
+              fontSelect.replaceChildren();
+              const option = document.createElement("option");
+              option.textContent = "Font catalog unavailable";
+              fontSelect.appendChild(option);
+              fontSelect.disabled = true;
+              fontPrev.disabled = true;
+              fontNext.disabled = true;
+              setStatus("offline");
+            });
         });
     })();
   </script>
