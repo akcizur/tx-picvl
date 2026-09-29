@@ -3,6 +3,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 const SOURCE = new URL("../fonts-czech.json", import.meta.url);
 const OUT_DIR = new URL("../fonts/czech/", import.meta.url);
 const OUT_CATALOG = new URL("../fonts-czech-local.json", import.meta.url);
+const OUT_SCRIPT = new URL("../fonts-czech-local.js", import.meta.url);
 
 const concurrency = 8;
 
@@ -92,6 +93,20 @@ async function main() {
   };
 
   await writeFile(OUT_CATALOG, JSON.stringify(output, null, 2) + "\n");
+
+  const runtimeCatalog = {
+    generatedAt: output.generatedAt,
+    sourceCount: output.sourceCount,
+    downloadedCount: output.downloadedCount,
+    failedCount: output.failedCount,
+    fonts: success.map(({ fontName, confidence, file }) => ({ fontName, confidence, file }))
+  };
+
+  await writeFile(
+    OUT_SCRIPT,
+    "window.__TX_PICVL_FONT_CATALOG__ = " + JSON.stringify(runtimeCatalog) + ";\n"
+  );
+
   if (!success.length) throw new Error("No fonts were downloaded.");
   console.log(`Downloaded ${success.length}/${catalog.length} Czech Google Fonts.`);
 }
