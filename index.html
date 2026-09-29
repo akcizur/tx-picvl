@@ -11,7 +11,13 @@
     body {
       margin: 0;
       min-height: 100vh;
-      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      font-family: "Google Sans", "Google Sans Text", Roboto, ui-sans-serif, system-ui, sans-serif;
+      font-weight: 400;
+      font-optical-sizing: auto;
+      font-synthesis: none;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
       background: #0a0a0a;
       color: #f5f5f5;
       display: grid;
@@ -21,15 +27,60 @@
       width: min(760px, calc(100% - 40px));
       padding: 56px 0;
     }
-    .eyebrow { color: #888; letter-spacing: .12em; text-transform: uppercase; font-size: 12px; }
-    h1 { font-size: clamp(42px, 9vw, 92px); line-height: .95; margin: 14px 0 24px; letter-spacing: -.06em; }
-    h2 { margin-top: 48px; font-size: 18px; }
-    p, li { color: #b8b8b8; line-height: 1.7; }
+    .eyebrow {
+      color: #8a8a8a;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+    h1 {
+      font-size: clamp(42px, 9vw, 92px);
+      line-height: .94;
+      margin: 14px 0 24px;
+      letter-spacing: -.055em;
+      font-weight: 700;
+    }
+    h2 {
+      margin-top: 48px;
+      font-size: 17px;
+      line-height: 1.25;
+      letter-spacing: -.018em;
+      font-weight: 600;
+    }
+    p, li {
+      color: #b8b8b8;
+      line-height: 1.68;
+      font-size: 16px;
+      font-weight: 400;
+      letter-spacing: -.006em;
+    }
     ul { padding-left: 20px; }
-    a { color: #fff; }
+    a {
+      color: #fff;
+      font-weight: 500;
+      letter-spacing: -.005em;
+    }
     .links { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 32px; }
-    .links a { border-bottom: 1px solid #555; text-decoration: none; padding-bottom: 4px; }
-    footer { margin-top: 56px; color: #555; font-size: 12px; }
+    .links a {
+      border-bottom: 1px solid #555;
+      text-decoration: none;
+      padding-bottom: 4px;
+      transition: color .2s ease, border-color .2s ease;
+    }
+    .links a:hover {
+      color: #fff;
+      border-color: #aaa;
+    }
+    footer {
+      margin-top: 56px;
+      color: #555;
+      font-size: 12px;
+      line-height: 1.4;
+      font-weight: 500;
+      letter-spacing: .01em;
+    }
   </style>
 </head>
 <body>
